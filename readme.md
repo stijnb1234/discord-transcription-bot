@@ -1,4 +1,4 @@
-## Discord-Transcript
+[![discord-transcription-bot](https://github-readme-stats.vercel.app/api/pin/?username=navaneethkm004&repo=discord-transcription-bot&theme=dark)](https://github.com/navaneethkm004/discord-transcription-bot)<br/>
 
 An advanced Transcript Bot, which allows you to transcript almost Infinite messages of a channel, and get them into a readable word (docx) File!
 
