@@ -4,11 +4,11 @@ An advanced Transcript Bot, which allows you to transcript almost Infinite messa
 
 ## Installation | How to use the Bot
 
- **1.** Install [node.js v12](https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode) or higher
+ **1.** Install node.js v16.9.0 or higher
 
  **2.** Download this repo and unzip it    |    or git clone it
  
- **3.** Install all of the packages with **`npm install`**     |  the packages are   **`npm install node.js discord.js officegen fs`**
+ **3.** Install all of the packages with **`npm install`**     |  the packages are   **`npm install discord.js officegen`**
  
  **4.** start the bot with **`node index.js`**
 

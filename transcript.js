@@ -4,7 +4,7 @@
 const discord = require('discord.js');
 const officegen = require('officegen')
 const fs = require('fs')
-const { MessageAttachment, MessageEmbed } = require(`discord.js`);
+const { MessageAttachment } = require(`discord.js`);
 ////////////////////////////////////////////
 ///////////LOADING THE MODULE///////////////
 ////////////////////////////////////////////
@@ -18,12 +18,13 @@ module.exports = function (client, cmd, msglimit) {
   console.log(` :: ⬜️ Module: ${description.name} | Loaded version ${description.version} from ("${description.filename}")`)
 
   //if a message is received
-  client.on("message", async message => {
+  client.on("messageCreate", async message => {
     if (message.author.bot) return;
+	
     //if a not the command skip
     if (!message.content.toLowerCase().includes(cmd)) return;
     //do transcripting - making a docx file with design. Here the Docs: https://github.com/Ziv-Barber/officegen/blob/4bfff80e0915f884199495c0ea64e5a0f0549cfe/manual/docx/README.md#prgapi
-    let temporarymsg = await message.channel.send(new MessageEmbed().setAuthor("Transcripting..."))
+    let temporarymsg = await message.channel.send("Transcripting...")
     let docx = officegen({
       type: 'docx',
       author: client.user.username,
@@ -73,7 +74,7 @@ module.exports = function (client, cmd, msglimit) {
       if (channelMessages) //if its true
         messageCollection = messageCollection.concat(channelMessages); //add them to the collection
     }
-    let msgs = messageCollection.array().reverse(); //reverse the array to have it listed like the discord chat
+    let msgs = messageCollection.reverse(); //reverse the array to have it listed like the discord chat
     //now for every message in the array make a new paragraph!
     await msgs.forEach(async msg => {
       // Create a new paragraph:
@@ -81,7 +82,7 @@ module.exports = function (client, cmd, msglimit) {
       pObj.options.align = 'left'; //Also 'right' or 'justify'.
       //Username and Date
       pObj.addText(`${msg.author.tag}`, { font_face: 'Arial', color: '3c5c63', bold: true, font_size: 14 });
-      pObj.addText(`  ❤️  ${msg.createdAt.toDateString()}  ❤️  ${msg.createdAt.toLocaleTimeString()}`, { font_face: 'Arial', color: '3c5c63', bold: true, font_size: 14 }); //
+      pObj.addText(`  -️  ${msg.createdAt.toDateString()}  -️  ${msg.createdAt.toLocaleTimeString()}`, { font_face: 'Arial', color: '3c5c63', bold: true, font_size: 14 }); //
       //LINEBREAK
       pObj.addLineBreak()
       //message of user     
@@ -114,14 +115,14 @@ module.exports = function (client, cmd, msglimit) {
     out.on("finish", function (err, result) {
       try { // try to send the file
         const buffer = fs.readFileSync(`./transcript.docx`); //get a buffer file
-        const attachment = new MessageAttachment(buffer, `./transcript.docx`); //send it as an attachment
         //send the Transcript Into the Channel and then Deleting it again from the FOLDER
-        message.channel.send(attachment).then(del => { //after sending it delete the file and edit the temp message to an approvement
-          temporarymsg.edit(new MessageEmbed().setAuthor("Here is the Transcript", message.member.user.displayAvatarURL({ dynamic: true })))
+          temporarymsg.edit({content: `Here is the transcript!`, files: [
+    { attachment: buffer, name: 'transcript.docx' }
+]})
           fs.unlinkSync(`./transcript.docx`)
-        })
-      } catch { // if the file is to big to be sent, then catch it!
-        temporarymsg.edit(new MessageEmbed().setAuthor("ERROR! Transcript is to big, to be sent into the Channel!", message.member.user.displayAvatarURL({ dynamic: true }).setFooter("Smaller the maximum amount of Messages!")))
+      } catch(error) { // if the file is to big to be sent, then catch it!
+		
+        temporarymsg.edit("ERROR! " + error)
         fs.unlinkSync(`./transcript.docx`) //delete the docx
       }
     })
